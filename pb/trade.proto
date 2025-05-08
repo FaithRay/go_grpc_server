@@ -1,0 +1,103 @@
+syntax = "proto3";
+
+option go_package = "./trade";
+
+enum OrderSide {
+    UNKNOW_SIDE = 0;
+    BUY = 1;
+    SELL = 2;
+    SHORT_SELL = 3;
+}
+enum OrderStatus
+{
+    UNKNOW_ORDER_STATUS = 0;
+    Init = 1;
+    New = 2;
+    PartiallyFilled = 3;
+    Filled = 4;
+    Canceled = 5;
+    Rejected = 6;
+}
+
+enum OrdType
+{
+    UNKNOW_ORDTYPE = 0;
+    Market = 1;
+    Limit = 2;
+    Stop = 3;
+}
+
+enum TimeInForce
+{
+    UNKNOW_TIF = 0;
+    GFD = 1;
+    GTC = 2;
+    IOC = 3;
+    FOK = 4;
+    GTX = 5;
+    GTD = 6;
+}
+
+message TradeRequest {
+    int32 infxid = 1;
+    int32 secid = 2;
+}
+
+message TradeResponse {
+    int32 infxid = 1;
+    int32 secid = 2;
+    string symbol = 3;
+    string tradeid = 4;
+    int64 volume = 5;
+    double price = 6;
+    int64 tradevolume = 7;
+    double tradeprice = 8;
+    int64 filltime = 9;
+    int64 submissiontime = 10;
+    OrderSide side = 11;
+    int32 orderid = 12;
+}
+
+message TradeListResponse {
+    repeated TradeResponse trades = 1;
+}
+
+message OrderRequest  { 
+    int32 infxid = 1;
+    int32 secid = 2;
+}
+
+message OrderResponse {
+    int32 infxid = 1;
+    int32 secid = 2;
+    string symbol = 3;
+    string orderid = 4;
+    int32 id = 5;
+    string execid = 6;
+    int64 volume = 7;
+    double price = 8;
+    double avgpx = 9;
+    double stopprice = 10;
+    int64 cumqty = 11;
+    int64 submissiontime = 12;
+    int64 acktime = 13;
+    int64 filltime = 14;
+    OrderSide side = 15;
+    OrderStatus status = 16;
+    OrdType ordertype = 17;
+    TimeInForce tif = 18;
+    int32 broker = 19;
+}
+
+message OrderListResponse {
+    repeated OrderResponse orders = 1;
+}
+
+service TradeService {
+    rpc GetTrade (TradeRequest) returns (TradeListResponse);
+    rpc GetOrder (OrderRequest) returns (OrderListResponse);
+
+    //rpc GetForwardTrade (stream GetTradeRequest) returns (GetTradeResponse);
+    //rpc GetBackwardTrade (GetTradeRequest) returns (stream GetTradeResponse);
+    //rpc GetBidwardTrade (stream GetTradeRequest) returns (stream GetTradeResponse);
+}
